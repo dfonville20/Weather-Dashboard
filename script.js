@@ -76,3 +76,81 @@ function makeAjaxCall(citySearch) {
       UVEl.text("UV Index: ");
       UVEl.append(UVdivEl);
       currWindEl.after(UVEl);
+      if (UV <= 4) {
+        UVdivEl.removeClass();
+        UVdivEl.addClass("bg-success");
+      }
+      if (UV <= 8 && UV > 4) {
+        UVdivEl.removeClass();
+        UVdivEl.addClass("bg-warning");
+      }
+      if (UV > 8) {
+        UVdivEl.removeClass();
+        UVdivEl.addClass("bg-danger");
+      }
+    });
+  });
+
+  $.ajax({
+    url: query5day,
+    method: "GET",
+  }).then(function (responseForecast) {
+    $("#forecast5Day").empty();
+    var title = $("<h2>").addClass("card-title");
+    title.text("5 Day Forecast");
+    $("#forecast5Day").prepend(title);
+    var dateRow = $("<div>").addClass("row date-row");
+    title.after(dateRow);
+
+    for (var i = 6; i <= 39; i = i + 8) {
+      var a = new Date(responseForecast.list[i].dt * 1000);
+      var yearForecast = a.getFullYear();
+      var monthForecast = a.getMonth() + 1;
+      var dayForecast = a.getDate();
+      var tempForecast = (
+        (responseForecast.list[i].main.temp - 273.15) * 1.8 +
+        32
+      ).toFixed(1);
+      var humidForecast = responseForecast.list[i].main.humidity;
+      var weathIconForecast = responseForecast.list[i].weather[0].icon;
+      var weathIconSrcForecast =
+        "http://openweathermap.org/img/w/" + weathIconForecast + ".png";
+      var dateForecast = monthForecast + "/" + dayForecast + "/" + yearForecast;
+      var cardDiv = $("<div>").addClass(
+        "card bg-primary date lg-col-2 med-col-4 sm-col-6"
+      );
+      var dateForecastEl = $("<h5>").addClass("card-title");
+      var iconImgForecast = $("<img>").attr({
+        src: weathIconSrcForecast,
+        alt: "Weather icon",
+      });
+      var tempForecastEl = $("<p>").addClass("text5day");
+      var humidForecastEl = $("<p>").addClass("text5day");
+      cardDiv.append(
+        dateForecastEl,
+        iconImgForecast,
+        tempForecastEl,
+        humidForecastEl
+      );
+      $(".date-row").append(cardDiv);
+      dateForecastEl.text(dateForecast);
+      tempForecastEl.text("Temp: " + tempForecast + " \xB0F");
+      humidForecastEl.text("Humidity: " + humidForecast + " %");
+    }
+  });
+}
+
+function renderCityList() {
+  $(".list-group").empty();
+  for (var i = 0; i < cityList.length; i++) {
+    cityListEl = cityList.join();
+    var cityListItemEl = $("<li>").addClass("list-group-item");
+    cityListItemEl.text(cityList[i]);
+    $(".list-group").prepend(cityListItemEl);
+  }
+}
+$(".list-group").on("click", "li", function (event) {
+  event.preventDefault();
+  $(".date-row").empty();
+  makeAjaxCall($(this).text());
+});

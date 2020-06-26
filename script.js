@@ -154,3 +154,15 @@ $(".list-group").on("click", "li", function (event) {
   $(".date-row").empty();
   makeAjaxCall($(this).text());
 });
+$(".fa-search").on("click", function (event) {
+  event.preventDefault();
+  $(".date-row").empty();
+  citySearch = $(".form-control").val();
+  if (cityList.indexOf(citySearch) === -1) {
+    //for when there is no citylist
+    cityList.push(citySearch); //append to list
+    localStorage.setItem("cityName", JSON.stringify(cityList));
+  }
+  renderCityList();
+  makeAjaxCall(citySearch);
+});

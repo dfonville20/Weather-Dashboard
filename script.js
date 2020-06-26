@@ -50,3 +50,29 @@ function makeAjaxCall(citySearch) {
       src: weathIconSrc,
       alt: "Weather icon",
     });
+    $("#currentData").append(currentRow);
+    currentRow.append(currCityEl, iconImg);
+    currentRow.after(currTempEl);
+    currTempEl.after(currHumidEl);
+    currHumidEl.after(currWindEl);
+
+    var latNum = response.coord.lat;
+    var longNum = response.coord.lon;
+    var queryURLUV =
+      "https://api.openweathermap.org/data/2.5/uvi?appid=b5c1e045f3d4ca28cc69f6dbe4221e27&lat=" +
+      latNum +
+      "&lon=" +
+      longNum;
+
+    $.ajax({
+      url: queryURLUV,
+      method: "GET",
+    }).then(function (responseUV) {
+      var UV = responseUV.value;
+      var UVEl = $("<h6>");
+      var UVdivEl = $("<div>");
+      UVdivEl.attr("id", "UVdiv");
+      UVdivEl.text(UV);
+      UVEl.text("UV Index: ");
+      UVEl.append(UVdivEl);
+      currWindEl.after(UVEl);

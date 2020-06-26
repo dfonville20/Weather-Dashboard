@@ -2,7 +2,7 @@ var cityList = JSON.parse(localStorage.getItem("cityName")) || [];
 var cityListEl = $("list-group");
 
 if (cityList.length == 0) {
-  cityList = ["Seattle"];
+  cityList = ["Greensboro"];
   makeAjaxCall(cityList);
 } else {
   makeAjaxCall(cityList[cityList.length - 1]);
